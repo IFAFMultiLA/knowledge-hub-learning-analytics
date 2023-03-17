@@ -1,0 +1,57 @@
+---
+title: "Learning dashboards: a review of scientific findings and best practices"
+author: "Mara Lein, Maria Osipenko"
+date: ""
+output: 
+ bookdown::pdf_document2:
+    toc: false
+    fig_caption: yes
+    keep_tex: true
+bibliography: [references.bib] 
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Introduction
+
+Beispieltext: 
+
+When modelling high dimensional data sets matrix factorization is a frequently used approach to reduce the dimensions of the data while keeping the underlying data structure. Many factorization methodologies have been proposed sofar depending on the nature of the problem (with and without restrictions on the resulting coefficients).
+
+We focus on the problems, where the primary task is to extract the latent components at the core of the underlying data structure in an efficient way in presence of skewed heteroscedastic error terms.
+
+This modelling situation arises for a example when analysing  structural components in daily traffic flow in @OSIPENKO2021.
+
+# Results
+
+A table:
+
+see our results in Table \@ref(tab:table00)
+
+
+```{r table00,echo=FALSE}
+library(knitr)
+library(kableExtra)
+options(scipen=999)
+text_decr<-data.frame(Year=c(seq(2015,2019),"All years"), News=c("4,395","5,391","5,738","8,465","6,435","30,424"),
+                      Words=c("823","840","923","1,352","1,401","1,114"))
+ knitr::kable(text_decr, align = "llll",
+               col.names = c("Year","News Articles (merged)","Average Word Count"),
+               row.names = FALSE,
+               #table.attr = "id=\"table1\"",
+               digits = 0,
+               caption = "Description of the final textual corpus"
+  )
+```
+
+A figure, see Figure \@ref(fig:fig00):
+
+```{r fig00, out.width='25%', fig.align='center', fig.cap='...'}
+knitr::include_graphics('images/pf.png')
+```
+
+# Literature {-}
+
+<div id="refs"></div>
