@@ -33,7 +33,6 @@ see our results in Table \@ref(tab:table00)
 
 ```{r table00,echo=FALSE}
 library(knitr)
-library(kableExtra)
 options(scipen=999)
 text_decr<-data.frame(Year=c(seq(2015,2019),"All years"), News=c("4,395","5,391","5,738","8,465","6,435","30,424"),
                       Words=c("823","840","923","1,352","1,401","1,114"))
