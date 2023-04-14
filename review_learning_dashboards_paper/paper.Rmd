@@ -1,5 +1,5 @@
 ---
-title: "Learning dashboards: a review of scientific findings and best practices"
+title: "Interactive learning dashboards: a review of recent empirical studies and best practices"
 author: "Mara Lein, Maria Osipenko"
 date: ""
 output: 
@@ -14,15 +14,158 @@ bibliography: [references.bib]
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+
+https://ciakovx.github.io/rcrossref.html
+```{r}
+#install.packages("rcrossref")
+#install.packages("usethis")
+#install.packages("tidyverse")
+#install.packages("listviewer")
+library(rcrossref)
+library(usethis)
+library(tidyverse)
+library(listviewer)
+```
+```{r}
+#usethis::edit_r_environ()
+```
+
+
+
+https://github.com/ropensci/openalexR
+
+```{r}
+#remotes::install_github("ropensci/openalexR")
+#options(openalexR.mailto = "mariaosipenko@yahoo.de")
+```
+
+
+
+```{r}
+rm(list=ls())
+library(openalexR)
+works_search1 <- oa_fetch(
+  entity = "works",
+  title.search = c("learning dashboards"),  #"interactive learning", "learning dashboards",  #remove machine learning, deep learning, reinforcement learning
+  cited_by_count = ">0",
+  from_publication_date = "2019-01-01",
+  to_publication_date = "2023-03-31",
+  sort = "cited_by_count:desc",
+  abstract=TRUE,
+  verbose = TRUE
+)
+works_search2 <- oa_fetch(
+  entity = "works",
+  title.search = c("adaptive learning environment"),
+  cited_by_count = ">0",
+  from_publication_date = "2019-01-01",
+  to_publication_date = "2023-03-31",
+  sort = "cited_by_count:desc",
+  abstract=TRUE,
+  verbose = TRUE
+)
+works_search3 <- oa_fetch(
+  entity = "works",
+  title.search = c("interactive dashboard"),  
+  cited_by_count = ">0",
+  from_publication_date = "2019-01-01",
+  to_publication_date = "2023-03-31",
+  sort = "cited_by_count:desc",
+  abstract=TRUE,
+  verbose = TRUE
+)
+works_search4 <- oa_fetch(
+  entity = "works",
+  title.search = c("interactive learning"),  
+  cited_by_count = ">0",
+  from_publication_date = "2019-01-01",
+  to_publication_date = "2023-03-31",
+  sort = "cited_by_count:desc",
+  abstract=TRUE,
+  verbose = TRUE
+)
+#works_search4$display_name
+
+#str(works_search)
+
+```
+
+
+put together, remove the duplicates and scan for not related papers (e.g. concerning machine learning methods).
+
+```{r}
+works_search<-rbind(works_search1,
+                    #works_search2,
+                    works_search3,works_search4)
+rm(list=c(paste0("works_search",1:4)))
+works_search<-works_search[!duplicated(works_search$display_name),]
+
+ind_remove<-(grepl("machine learning",works_search$display_name,ignore.case = T)&!(grepl("interactive",works_search$display_name,ignore.case = T)&grepl("dashboard",works_search$display_name,ignore.case = T))|
+  grepl("deep learning",works_search$display_name,ignore.case = T)&!(grepl("interactive",works_search$display_name,ignore.case = T)&grepl("dashboard",works_search$display_name,ignore.case = T))|
+    grepl("deep-learning",works_search$display_name,ignore.case = T)&!(grepl("interactive",works_search$display_name,ignore.case = T)&grepl("dashboard",works_search$display_name,ignore.case = T))|
+    grepl("transfer learning",works_search$display_name,ignore.case = T)&!(grepl("interactive",works_search$display_name,ignore.case = T)&grepl("dashboard",works_search$display_name,ignore.case = T))|
+  grepl("reinforcement learning",works_search$display_name,ignore.case = T)&!(grepl("interactive",works_search$display_name,ignore.case = T)&grepl("dashboard",works_search$display_name,ignore.case = T))|
+  grepl("COVID-19", works_search$display_name,ignore.case = T))
+
+works_search<-works_search[!ind_remove,]
+
+write.csv(file="titles.csv",works_search$display_name)
+```
+
+TODO:
+- filter the titles
+- read the most cited for keywords topics (citescore corrected for the age)
+- read the articles with high proportion of certain topics
+- reverse engineering for more articles which are cited
+
+Example: Web Tracking – A Literature Review on the State of Research
+
 # Introduction
 
-Beispieltext: 
+Online learning applications with a large proportion of interactive, self-chosen content for individual learning paths become more and more essential in higher education. Especially, the lockdown during the COVID-19 pandemic enhanced a boom in the usage of such online learning applications and empirical studies of their effectiveness. 
 
-When modelling high dimensional data sets matrix factorization is a frequently used approach to reduce the dimensions of the data while keeping the underlying data structure. Many factorization methodologies have been proposed sofar depending on the nature of the problem (with and without restrictions on the resulting coefficients).
+The purpose of the present paper is to review the recent advances in learning dashboards.
 
-We focus on the problems, where the primary task is to extract the latent components at the core of the underlying data structure in an efficient way in presence of skewed heteroscedastic error terms.
+According to the taxonomy of @Cooper1988, our main focus rests on research outcomes. That is, we are interested primarily in identification of the features of learning dashboards that have been empirically shown to improve learning performance and experience. Best practices of using those features are also of major interest in our analysis.  Finally, since generalization of the findings to other teaching domains is favorable, we also overview the underlying behavioral theories where possible.
 
-This modelling situation arises for a example when analysing  structural components in daily traffic flow in @OSIPENKO2021.
+Our primary goal is to identify central issues concerning learning dashboards with the emphasis on unresolved topics and formulate recommendations for developing a learning dashboard with a focus on attaining mathematical skills in an asynchronous online learning application.
+
+Our perspective is a neutral representation of available published literature according to our specific criteria provided below.
+
+<!--
+Focus: research outcomes, research methods, theories, and practices or applications. 
+Goals: Integration
+a) Generalization
+b) Conflict Resolution
+c) Linguistic Bridge-building
+Criticism
+Identification of Central Issues
+Perspective: Neutral Representation
+Espousal of Position
+Coverage: Exhaustive
+Exhaustive with Selective Citation
+Representative
+Central or Pivotal
+Organization: Historical
+Conceptual
+Methodological 
+Audience: Specialized Scholars
+General Scholars
+Practitione~ or Policy Makers
+General Public -->
+
+Our coverage strategy is representative sample of papers available through the OpenAlex API which indexes 209M works collected from various sources as Crossref, PubMed and institutional and preprint repositories as arXiv providing all together 124,000 publishing venues as @priem2022openalex. 
+
+For our analysis, we select articles published in the period from 2019-01-01 to 2023-03-31. Moreover, based on their citation index, we pivot the analysis concentrating on most cited papers. The results are organized conceptually and are meant for general researchers and practitioners.
+
+We follow four steps of @herz2010:
+
+- define the review scope
+- conceptualization of the topic (definitions of the topic: learning dashboards) -> based on the previous review @matcha2020
+- literature search: journal search, database search, keyword search, backward (citations in the articles)/forward search (citations of the articles of keyword search)
+- literature analysis and synthesis (define main dimensions)
+
+
 
 # Results
 
