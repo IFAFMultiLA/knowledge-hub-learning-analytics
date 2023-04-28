@@ -1,162 +1,102 @@
 ---
-title: "Interactive learning dashboards: a review of recent empirical studies and best practices"
-author: "Mara Lein, Maria Osipenko"
+title: "Online learning apps from the learning cycle perspective: recent advances and best practices"
+author: Maria Osipenko^[Hochschule für Wirtschaft und Recht Berlin; osipenko@hwr-berlin.de] and Mara Lein ^[Hochschule für Wirtschaft und Recht Berlin]
 date: ""
 output: 
- bookdown::pdf_document2:
-    toc: false
+ bookdown::html_document2:
     fig_caption: yes
-    keep_tex: true
 bibliography: [references.bib] 
+link-citations: yes
+linkcolor: blue
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = FALSE)
 ```
 
 
-https://ciakovx.github.io/rcrossref.html
-```{r}
-#install.packages("rcrossref")
-#install.packages("usethis")
-#install.packages("tidyverse")
-#install.packages("listviewer")
-library(rcrossref)
-library(usethis)
-library(tidyverse)
-library(listviewer)
-```
-```{r}
-#usethis::edit_r_environ()
-```
-
-
-
-https://github.com/ropensci/openalexR
-
-```{r}
+```{r, echo=F}
+##https://github.com/ropensci/openalexR
 #remotes::install_github("ropensci/openalexR")
 #options(openalexR.mailto = "mariaosipenko@yahoo.de")
+
+#for pdf (does not compile because of unicode character checkmark U+2713)
+ # bookdown::pdf_document2:
+ #    toc: false
+ #    fig_caption: yes
+ #    keep_tex: true
 ```
 
-
-
-```{r}
-rm(list=ls())
-library(openalexR)
-works_search1 <- oa_fetch(
-  entity = "works",
-  title.search = c("learning dashboards"),  #"interactive learning", "learning dashboards",  #remove machine learning, deep learning, reinforcement learning
-  cited_by_count = ">0",
-  from_publication_date = "2019-01-01",
-  to_publication_date = "2023-03-31",
-  sort = "cited_by_count:desc",
-  abstract=TRUE,
-  verbose = TRUE
-)
-works_search2 <- oa_fetch(
-  entity = "works",
-  title.search = c("adaptive learning environment"),
-  cited_by_count = ">0",
-  from_publication_date = "2019-01-01",
-  to_publication_date = "2023-03-31",
-  sort = "cited_by_count:desc",
-  abstract=TRUE,
-  verbose = TRUE
-)
-works_search3 <- oa_fetch(
-  entity = "works",
-  title.search = c("interactive dashboard"),  
-  cited_by_count = ">0",
-  from_publication_date = "2019-01-01",
-  to_publication_date = "2023-03-31",
-  sort = "cited_by_count:desc",
-  abstract=TRUE,
-  verbose = TRUE
-)
-works_search4 <- oa_fetch(
-  entity = "works",
-  title.search = c("interactive learning"),  
-  cited_by_count = ">0",
-  from_publication_date = "2019-01-01",
-  to_publication_date = "2023-03-31",
-  sort = "cited_by_count:desc",
-  abstract=TRUE,
-  verbose = TRUE
-)
-#works_search4$display_name
-
-#str(works_search)
-
+```{r,echo=F}
+# https://bookdown.org/joone/ComputationalMethods/topicmodeling.html
+# library(tidyverse)
+# library(tidytext)
+# library(stm)
 ```
 
-
-put together, remove the duplicates and scan for not related papers (e.g. concerning machine learning methods).
-
-```{r}
-works_search<-rbind(works_search1,
-                    #works_search2,
-                    works_search3,works_search4)
-rm(list=c(paste0("works_search",1:4)))
-works_search<-works_search[!duplicated(works_search$display_name),]
-
-ind_remove<-(grepl("machine learning",works_search$display_name,ignore.case = T)&!(grepl("interactive",works_search$display_name,ignore.case = T)&grepl("dashboard",works_search$display_name,ignore.case = T))|
-  grepl("deep learning",works_search$display_name,ignore.case = T)&!(grepl("interactive",works_search$display_name,ignore.case = T)&grepl("dashboard",works_search$display_name,ignore.case = T))|
-    grepl("deep-learning",works_search$display_name,ignore.case = T)&!(grepl("interactive",works_search$display_name,ignore.case = T)&grepl("dashboard",works_search$display_name,ignore.case = T))|
-    grepl("transfer learning",works_search$display_name,ignore.case = T)&!(grepl("interactive",works_search$display_name,ignore.case = T)&grepl("dashboard",works_search$display_name,ignore.case = T))|
-  grepl("reinforcement learning",works_search$display_name,ignore.case = T)&!(grepl("interactive",works_search$display_name,ignore.case = T)&grepl("dashboard",works_search$display_name,ignore.case = T))|
-  grepl("COVID-19", works_search$display_name,ignore.case = T))
-
-works_search<-works_search[!ind_remove,]
-
-write.csv(file="titles.csv",works_search$display_name)
-```
-
-TODO:
-- filter the titles
-- read the most cited for keywords topics (citescore corrected for the age)
-- read the articles with high proportion of certain topics
-- reverse engineering for more articles which are cited
-
-Example: Web Tracking – A Literature Review on the State of Research
 
 # Introduction
 
 Online learning applications with a large proportion of interactive, self-chosen content for individual learning paths become more and more essential in higher education. Especially, the lockdown during the COVID-19 pandemic enhanced a boom in the usage of such online learning applications and empirical studies of their effectiveness. 
 
-The purpose of the present paper is to review the recent advances in learning dashboards.
+In their meta analysis of more than 50 publications with randomized or quasi-randomized experiments on online, blended, and face-to-face learning @means2010 report significant improvement in learning outcomes for online and blended formats. Some more recent meta studies report superiority of flipped classroom approach compared to traditional learning.
 
-According to the taxonomy of @Cooper1988, our main focus rests on research outcomes. That is, we are interested primarily in identification of the features of learning dashboards that have been empirically shown to improve learning performance and experience. Best practices of using those features are also of major interest in our analysis.  Finally, since generalization of the findings to other teaching domains is favorable, we also overview the underlying behavioral theories where possible.
+A natural approach to designing active learning units in asynchronous online and blended settings is the flipped classroom technique which outperforms the classical lecturing approach in numerous studies (@xiu2020 and @shi2020). @hew2020 propose designing fully online flipped classroom wit online meeting instead of face-to-face one.  Recent literature on MOOCs and small online courses (cite) underpin that even fully asynchronous online learning can be effective provided the course activities and materials are designed to meet students needs.
 
-Our primary goal is to identify central issues concerning learning dashboards with the emphasis on unresolved topics and formulate recommendations for developing a learning dashboard with a focus on attaining mathematical skills in an asynchronous online learning application.
+The purpose of the present paper is to review the recent advances and best practices for designing online learning units. Our primary goal is to identify effective parts and elements of online learning units essential for learning success and formulate recommendations for developing a such asynchronous online learning applications.
 
-Our perspective is a neutral representation of available published literature according to our specific criteria provided below.
+According to the taxonomy of @Cooper1988, our main focus rests on research outcomes. That is, we are interested primarily in identification of the features of computer aided online learning environments that provably improve learning performance and experience. Best practices of using those features are also of major interest in our analysis.  Finally, since generalization of the findings to other teaching domains is favorable, we also overview the underlying behavioral theories where possible.
 
-<!--
-Focus: research outcomes, research methods, theories, and practices or applications. 
-Goals: Integration
-a) Generalization
-b) Conflict Resolution
-c) Linguistic Bridge-building
-Criticism
-Identification of Central Issues
-Perspective: Neutral Representation
-Espousal of Position
-Coverage: Exhaustive
-Exhaustive with Selective Citation
-Representative
-Central or Pivotal
-Organization: Historical
-Conceptual
-Methodological 
-Audience: Specialized Scholars
-General Scholars
-Practitione~ or Policy Makers
-General Public -->
+Our perspective is a neutral semi-automatic filtration and representation of available published literature according to our specific criteria provided below.
+
+To pivot/structure our analysis, we adopt a 5E instructional framework, where designing of learning units follows the five-phase learning cycle: Engage, Explore, Explain, Elaborate, and Evaluate described in @bybee2006 and @hew2020. The first phase aims at engaging students e.g. by pointing out to real world problem or question, the second phase deals with the exploration of the problem, the next step attempts at explaining the phenomena based on existing knowledge, elaborating the content implies providing material for deeper understanding and exercising, and the last step evaluates learning success. @su2010 use 5E learning cycle for designing an e-learning course and show that they enhance learning success.
+
+Since modern e-learning systems incorporate adaptation or personalizing feature, we propose to extend the 5E model to 5E+E by adding the "6 Evolution"-step. This step does not concern the learning cycle itself but rather includes the analysis of learning system usability and improvement considerations towards developing an adaptive personalized e-learning system, which adapts to individual learning preferences. 
+In the following, we undertake a more detailed overview of the learning cycle phases.
+
+1. Engagement. 
+
+Various definitions of student engagement exist. For instance, @hu2008 understand engagement as "the amount of effort dedicated to educational activities that bring out ideal performance". @lewis2011 see engagement as "the extent to which learners’ thoughts, feelings, and activities are actively involved in learning". 
+
+@wong2022 define learning engagement as "students’ psychological state of activity that affords them to feel activated, exert effort, and be absorbed during learning activities". Based on known theories about the concept, they differentiate between behavioral, cognitive and emotional components in engagement assessment. The authors view learning engagement as a multilevel construct varying with learning context and time. In this sense, engagement is superordinate to the other stages as it nurtures carrying out the learning activities.
+
+@lee2019 identify the following aspects as indicators of engagement: 1) behavioral - learning effort (self completed units, invested time), participation in class activities (attendance, asking questions), interaction (between learner and instructor), 2) cognitive task  - solving (knowledge formation, application, reflection/believes about achievement, focus),  learning management (self-direction, schedule), 3) emotional - learning satisfaction (interest, expectations, enjoyment), sense of belonging (degree of connection in the learning community), learning passion (willingness to confront challenges in the learning process).
+
+@skilling2020 measures seven adaptive factors as self-efficacy, mastery orientation, valuing, persistence, planning, task management, and enjoyment and the five maladaptive factor variables  as anxiety, failure avoidance, uncertain control, self-handicapping and disengagement to connect engagement, motivation and achievement in particular towards secondary school mathematics.
+
+@maroco2016 develop a questionnaire in order to address university students engagement.  @assuncao2020 test the questionnaire and confirm that it can produce reliable and valid data on academic engagement of university students. @jose2022 assess reliability and validity of further two self-assessment tools for quantifying engagement.
+
+
+2. Exploration.
+
+The exploration phase is exemplified in @bybee2006 through experimental activities, preliminary investigation or using prior knowledge to generate new outcomes. Student activities encompass e.g. stating and testing predictions and hypotheses, trying alternatives and generating new ideas. Depending on the subject, such activities can be implemented online through interactive applications with manipulatives (e.g. varying input parameters producing another output), simulations, and scenario-based exploration. These "hands-on" experience has been shown to enhance learning success in the literature, see @meylani2015. It is also connected to experiential learning (see @morris2020), where concrete experience is at core of the learning process.
+
+
+3. Explanation.
+
+As @bybee2006, this stage consists of providing new concepts or skills which serve as theoretical basis for solving the stated problem or explaining observed phenomena. In a purely online setting, where the instructor can not adapt to learning preferences of the learners, different learning preferences should be taken into account. @meylani2015 reviews works, where adding additional media contributed to learning success. Learners should have a palette of materials to acquire understanding of new concepts (as diagrams, videos, text-based materials) as @Katsaris2021. Cite more learning styles in e-learning.
+
+
+4. Elaboration
+
+As @bybee2006, elaboration enhances deeper and broader understanding and application of new skills. We interpret this stage also as the possibility for students to intensively exercise and gain routinized skills in solving problems associated with new concepts. Also, in asynchronous online learning, where direct instructor feedback is not available, a self-testing possibility with direct feedback should be provided as @meylani2015. To engage students more in exercising new concepts and attaining routinized skills, gamified learning actovities can be used. As noted in @demmese2020, such gamified activities can aid routine practice motivating to solve more exercises.
+
+
+5. Evaluation
+
+In this phase, ability assessment and the evaluation of student progress takes place. In online format, individual ability assessment is realized through quizzes with an end score. @meylani2015 points out the importance of self-monitoring in an online framework. An overview of completed activities and attained test scores can be implemented in form of learning analytics dashboard, which have been shown to enable learners to making informed decisions (@susnjak2022).
+
+
+6. Evolution.
+
+Evolve stage includes improving e-learning environment based on direct feedback, questionnaire (as e.g. system usability scale, @lewis2018) and learning analytics and adding personalized features. @meylani2015 stresses the importance of providing a form of learner control over the available online resources. Based on previous learning paths, an individual recommendation for each learner might nehance learning success. As noted in @Katsaris2021 personalized e-learning environments adapting to individual learning preferences are at rise. They have the potential to support individual learning process optimally. For instance, @fatahi2019 propose adaptation of e-learning environments based on emotion and personality. @khamparia2020 review the methodologies, how e-learning adaptation is realized based on automatic assessment of learning styles and point out an overall utility for learners success.
+
 
 Our coverage strategy is representative sample of papers available through the OpenAlex API which indexes 209M works collected from various sources as Crossref, PubMed and institutional and preprint repositories as arXiv providing all together 124,000 publishing venues as @priem2022openalex. 
 
-For our analysis, we select articles published in the period from 2019-01-01 to 2023-03-31. Moreover, based on their citation index, we pivot the analysis concentrating on most cited papers. The results are organized conceptually and are meant for general researchers and practitioners.
+For our analysis, we select articles published in the period from 2019-01-01 to 2023-03-31. The time frame was chosen so as to tie on the comprehensive review in @martin2020 covering works from 2009-2018 and the identified twelve online learning research themes, to highlight their development in subsequent years and to identify new topics.
+
+We pivot our analysis based on citation intensity, concentrating on most cited papers normalized on their age since publication. The results are organized conceptually and are meant for general researchers and practitioners.
 
 We follow four steps of @herz2010:
 
@@ -166,33 +106,491 @@ We follow four steps of @herz2010:
 - literature analysis and synthesis (define main dimensions)
 
 
+We obtain topic keywords following the definitions of the 5E stages from three papers: @eisenkraft2003, @duran2004, and @bybee2006. For the last stage of evolution, we adopt the descriptions of adaptive e-learning environments from @OZYURT2015, @el-sabagh2021, and @kolekar2019.
 
-# Results
+# Methods
 
-A table:
+## Searching and filtering the recent works on online learning
 
-see our results in Table \@ref(tab:table00)
+We search titles and abstracts of articles with publication date from 2015-01-01 to 2023-03-31 contained in the database OpenALex for keywords "online learning", "online teaching", "e-learning", "online course", "online education", "education technology", "computer assisted learning", "distance education" using the R-package openalexR (cite). As a result, we obtain 106032 articles (as of 2023-04-17).
+
+```{r, echo=F}
+rm(list=ls())
+
+# library(openalexR)
+# 
+# 
+# keyphrases<-c("online learning", "online teaching", "e-learning",
+#               "online course", "online education", "education technology",
+#               "computer assisted learning", "distance education")
+# 
+# works_search<-NULL
+# 
+# for(i in 1:length(keyphrases)){
+#   works_search1 <- oa_fetch(
+#   entity = "works",
+#   title.search = keyphrases[i],
+#   cited_by_count = ">0",
+#   from_publication_date = "2015-01-01",
+#   to_publication_date = "2023-03-31",
+#   sort = "cited_by_count:desc",
+#   abstract=TRUE,
+#   verbose = TRUE
+# )
+#   print(length(works_search1$display_name))
+#   works_search<-rbind(works_search, works_search1)
+# }
+# 
+# for(i in 2:length(keyphrases)){
+#   works_search1 <- oa_fetch(
+#   entity = "works",
+#   #title.search = keyphrases[i],
+#   abstract.search= keyphrases[i],
+#   cited_by_count = ">0",
+#   from_publication_date = "2015-01-01",
+#   to_publication_date = "2023-03-31",
+#   sort = "cited_by_count:desc",
+#   abstract=TRUE,
+#   verbose = TRUE
+# )
+#   works_search<-rbind(works_search, works_search1)
+# }
+# 
+# works_search<-works_search[!duplicated(works_search$display_name),]
+# save(works_search,file="works_search_base.RData")
+
+```
+
+```{r, echo=F}
+# works_search$so<-gsub("&","and",works_search$so)
+# works_search$so<-tolower(works_search$so)
+# #rm numbers from journal names
+# journals<-works_search$so
+# journals<-gsub("[[:digit:]]","",journals)
+# js1<-names(table(journals))#[table(journals)>=10]
+
+```
+
+Subsequently, we filter the publisher to be under the top 20 ranking of GoogleScholar in education, educational technology, and educational psychology (https://scholar.google.com/citations?view_op=top_venues&hl=en&vq=eng_educationaltechnology (as of 2023-04-17)). The filtering yields 5474 articles.
+
+```{r, echo=F}
+# # load google ranking
+# google_js<-read.csv("google_ranking_educ_tech.csv")[,2]
+# google_js<-gsub("&","and",google_js)
+# google_js<-tolower(google_js)
+# 
+# # search result journals which are in google rating
+# js_filter<-js1[js1%in%google_js]
+# 
+# ## add journals with highly cited papers
+# # js_high_cited<-works_search$so[works_search$cited_by_count>=quantile(works_search$cited_by_count,0.99)]
+# # js_high_cited<-unique(js_high_cited)
+# # js_filter<-c(js_filter,js_high_cited)
+# 
+# # additional feature: citation intensity
+# works_search$age<-as.Date("2023-04-17") - as.Date(works_search$publication_date)
+# works_search$cite_intensity<-works_search$cited_by_count/as.numeric(works_search$age)
+#
+# # filter and save
+# works_search<-works_search[works_search$so%in%js_filter,]
+# save(works_search,file="works_search_filter_all.RData")
+```
+
+Finally, we remove articles without abstracts available in the database, and are left with 5089 articles for further analysis.
+
+```{r}
+# load the data
+load("works_search_filter_all.RData")
+works_search<-works_search[!is.na(works_search$ab),]
+
+```
 
 
-```{r table00,echo=FALSE}
-library(knitr)
-options(scipen=999)
-text_decr<-data.frame(Year=c(seq(2015,2019),"All years"), News=c("4,395","5,391","5,738","8,465","6,435","30,424"),
-                      Words=c("823","840","923","1,352","1,401","1,114"))
- knitr::kable(text_decr, align = "llll",
-               col.names = c("Year","News Articles (merged)","Average Word Count"),
+```{r, echo=F, include=F}
+#set up document-term matrix using the titles and the abstracts of the search result.
+
+#install.packages("quanteda")
+library(quanteda)
+```
+
+
+```{r, echo=F}
+
+#combine titles and abstracts
+texts<-works_search[,c("id","display_name","ab")] 
+texts$ab<-gsub("Abstract","",texts$ab)
+texts$ab<-paste(texts$display_name,texts$ab)
+texts<-texts[!duplicated(texts$id),]
+
+rm_short_tokens<-function(tk,min.len=3){
+  return(tk[nchar(tk)>=min.len])
+}
+
+make_dfm<-function(texts){
+  #stopwords
+  mystopwords<-c("may","can","sub","now","etc", "the","via","let", "e.g", "also")
+  #tokenize
+  tk<-tokenizers::tokenize_word_stems(texts, stopwords = c(stopwords::stopwords("en"),mystopwords))
+  tk<-lapply(tk,rm_short_tokens)
+  tk<-tokens(as.tokens(tk), remove_punct=TRUE, remove_numbers = TRUE, remove_symbols = TRUE,remove_url = TRUE, remove_separators = TRUE, split_hyphens=T)
+  tk<-lapply(tk,gsub,pattern="quizz",replacement="quiz"); tk<-lapply(tk,gsub,pattern="quizizz",replacement="quiz")
+  tk<-lapply(tk,gsub,pattern="customis",replacement="customiz"); 
+  tk<-lapply(tk,gsub,pattern="practis",replacement="practic")
+  tk2<-tokens_ngrams(as.tokens(tk),n=1:2,skip=4)
+  #dfm
+  mydfm<-dfm(tk2, verbose = FALSE,tolower=TRUE)
+  #keep only terms with more than two chars
+  mydfm<-dfm_select(mydfm,pattern=c(stopwords::stopwords("en"),mystopwords),valuetype="fixed",selection="remove")
+  #keep only words with frequency >=10
+  mydfm<-dfm_trim(mydfm, min_docfreq = 0.001, max_docfreq=0.5,docfreq_type="prop")
+  #take relative frequencies as entries
+  return(mydfm)
+}
+
+mydfm<-make_dfm(texts$ab)
+
+```
+
+
+
+```{r fignums, fig.cap = "Upper panel: the number of articles in the selection on the time line of their publication date (2023 is omitted, dashed line marks the mean value). Bottom panel: the average citation intensity, computed as the number of citations divided by the years since publication.", echo=F}
+#articles/cite intensity per year
+articles_year<-aggregate(id~publication_year, works_search, length)
+citations_year<-aggregate(cite_intensity~publication_year,works_search,mean)
+
+par(mfrow=c(2,1))
+plot(articles_year[articles_year$publication_year<2023,], type="l", 
+     ylab="number of articles", xlab="year", ylim=c(0,1200), axes=F)
+axis(1)
+axis(2, at=seq(0,1000,500))
+abline(h=mean(articles_year[articles_year$publication_year<2023,2]), lty=2)
+
+plot(citations_year[citations_year$publication_year<2023,], type="l", 
+     ylab="citation intensity", xlab="year", ylim=c(0,0.025), axes=F)
+axis(1)
+axis(2, at=seq(0,0.02,0.01))
+abline(h=mean(citations_year[citations_year$publication_year<2023,2]), lty=2)
+
+```
+
+In Figure \@ref(fig:fignums) (upper panel) we plot the number of articles in the selection on the time line of their publication date (2023 is omitted, dashed line marks the mean value). The figure reveals a upward general trend in publication number and a peak in 2021. In the bottom panel of Figure \@ref(fig:fignums) the average citation intensity, computed as the number of citations divided by the years since publication, is reported. The citation intensity of papers published in 2020 is the highest. Apart from 2020, the overall citation intensity seems to stay fairly on the same level.
+
+To efficiently incorporate all resulting articles in our analysis, we employ an automatic topic identification via Latent Dirichlet Allocation (LDA), which was also used in @gurcan2021 for identification of emerging trends in e-learning. To target topics which are of primary interest for researchers, @eshima2023 propose to equip the model with predefined keywords. 
+
+For our analysis, we tie the keywords on the definitions and descriptions of the 6E stages, such that the obtained topics are pivoted by the learning cycle phases above. For that reason, a keyword assisted LDA model is fitted to the data for keywords based topic extraction using the R-Package keyATM (@eshima2023).
+
+```{r, echo=F, include=F}
+#install.packages("tidyverse")
+#install.packages("keyATM")
+library(tidyverse)
+library(keyATM)
+```
+
+```{r, echo=F}
+#set up dfm for keywords texts to find the keywords for topic modelling
+keyword_texts<-data.frame(name=character(6), description=character(6), stringsAsFactors = F)
+
+keyword_texts$name<-c("engagement","exploration","explanation","elaboration","evaluation","evolution")
+
+for (i in 1:length(keyword_texts$name)){
+  keyword_texts[i,2]<-as.character(paste(readLines(paste0(keyword_texts$name[[i]],".txt")),collapse=" "))
+}
+mydfm2<-make_dfm(keyword_texts$description)
+keywords<-list()
+
+for(i in 1:nrow(keyword_texts)){
+  keywords[[i]]<-names(topfeatures(mydfm2[i,],100))
+}
+
+```
+
+```{r, echo=F, include=F}
+names(keywords)<-keyword_texts$name
+
+# choose keywords from the top 100 terms
+keywords$engagement<-c("engag","motiv","emot","promot") 
+
+keywords$exploration<-c("explor", "experi", "interact", "activ")
+
+keywords$explanation<-c("explain", "instruct","knowledg", "theori") 
+
+keywords$elaboration<-c("problem","solv", "practic", "applic")
+
+keywords$evaluation<-c("assess", "evalu","test","feedback") 
+
+keywords$evolution<-c("adapt", "individu",  "improv", "behavior") 
+
+keywords_df<-data.frame(keywords)
+
+#read the keywords in keyATM format
+keyATM_docs <- keyATM_read(texts = mydfm)
+```
+
+Table \@ref(tab:tabkey) documents the provided keywords for the six keyword topics. These keywords are used as input into keyword assisted LDA model to facilitate targeted extraction of 5E+E structured topics.
+
+```{r tabkey, echo=F}
+ knitr::kable(keywords_df, align = "llll",
+               #col.names = c(colnames(topwords)[1:6], "7_research_dir", "8_tech_accept", "9_distanc_educ"),
                row.names = FALSE,
                #table.attr = "id=\"table1\"",
                digits = 0,
-               caption = "Description of the final textual corpus"
+               caption = "The chosen keywords for the six keyword topics to assist topic extraction."
   )
 ```
 
-A figure, see Figure \@ref(fig:fig00):
+Figure \@ref(fig:figkey) presents the chosen keywords with the respective proportional occurrence on the titles and abstracts of the considered collection of papers.
 
-```{r fig00, out.width='25%', fig.align='center', fig.cap='...'}
-knitr::include_graphics('images/pf.png')
+```{r figkey, echo=F, fig.cap="The chosen keywords and their proportions in the titles and abstracts of the considerred collection of papers."}
+visualize_keywords(keyATM_docs, keywords)
 ```
+In the following, we fit a keyword assisted topic model using the keywords above for the six keyword topics and further three keywordless topics\footnote{The final number of keywordless topics was chosen by their coherence measure (cite).}.
+
+```{r}
+# #fit keyATM model with 9 topics (the number of topics was chosen by inspecting the coherence of the resulting topics)
+# mod<-keyATM(docs = keyATM_docs,
+#                       no_keyword_topics = 3,
+#                       keywords = keywords,
+#                       model = "base",
+#                       options = list(seed = 667))
+# save(mod, file="mod.RData")
+load("mod.RData")
+```
+
+Based on screening the titles of the top 20 papers with the highest topic proportion, we label the keywordless topics as 7. research directions, 8. technology acceptance, and 9. challenges in distance education (henceforth research_dir, tech_accept, and distanc_educ respectively).
+
+```{r tabtw}
+#show the top words with highest weights
+topwords<-top_words(mod, n = 20)
+colnames(topwords)<-c(colnames(topwords)[1:6], "7_research_dir", "8_tech_accept", "9_distanc_educ")
+ knitr::kable(topwords, align = "llll",
+               #col.names = c(colnames(topwords)[1:6], "7_research_dir", "8_tech_accept", "9_distanc_educ"),
+               row.names = FALSE,
+               #table.attr = "id=\"table1\"",
+               digits = 0,
+               caption = "The 20 topwords for each topic.  The keywords matched on the respective topic are marked by a check mark. The keywords in the topwords of a foreign topic are label by the number of the keyword topic."
+  )
+```
+
+Table \@ref(tab:tabtw) documents the resulting 20 topwords for each topic with the keywords marked by a check mark. As seen, the most keywords are under the top 20, giving appropriate assistance to the topic extraction. The keyword, which are also under the top twenty in a foreign topic are labeled by the keyword topic number. For example, "engag" was given as a keyword for topic 1 engagement. However, it is also under the top 20 for topic 2 exploration. Such interrelatedness of the keywords is relatively rare under the top 20, which also supports appropriate assistance of the keywords for the topic finding.
+
+Figure \@ref(fig:figprop0) shows the expected topic proportions per paper The largest topic proportions for keyword assisted topics fall on the topics of elaboration and exploration followed by evolution. The smallest expected proportion among the keyword assisted topics is assigned to the explanation topic. From the keywordless topics, the first one with the top words "research", "digit", "higher", "review" is dominating.
+
+```{r figprop0, fig.cap="Expected topic proportions of the extracted topics and the top topic words."}
+#plot_topicprop(mod,order="topicid",n=11, xmax=0.675)
+topicprop<-apply(mod$theta,2,mean) #overall topic proportion
+cols <- c("gray66", "gray55", "gray44", hcl.colors(6, palette = "viridis", alpha = 0.8)[1:5],"indianred2")
+
+par(mar=c(4,7,1,1))
+bp<-barplot(rev(topicprop),axes=F, names=NA,xlim=c(0,0.5),horiz=T, xlab="expected topic proportion",col=scales::alpha(cols,0.5))
+axis(2,at=bp, label=rev(colnames(topwords)), las=1)
+axis(1)
+```
+In general, the expected topic proportions are rather moderate, meaning that the most papers contain more more than one topic with rather high probability.
+
+To inspect the topwords together with their relative weights in topics, we provide word clouds with top 20 topic shaping words for each topic in Figure \@ref(fig:figwc).
+
+```{r}
+n<-20
+tprobs<-twords<-matrix(NA,n,nrow(mod$phi))
+
+for(i in 1:ncol(twords)){
+  ind<-order(mod$phi[i,],decreasing=T)
+  tprobs[,i]<-head(mod$phi[i,ind],n)
+  twords[,i]<-head(colnames(mod$phi)[ind],n)
+}
+
+```
+
+```{r, include=FALSE}
+#install.packages("wordcloud")
+library(wordcloud)
+```
+
+
+```{r figwc, fig.cap="Wordclouds based on the word weights in the six keyword assisted topics: engagement, exploration, explanation, elaboration, evaluation, evolution, as well as three keywordless topics (from left to the right, from top to bottom)."}
+
+set.seed(1)
+par(mfrow=c(3,3), mar=rep(0.1,4))
+cols <- c("gray66", "gray55", "gray44", hcl.colors(6, palette = "viridis", alpha = 0.8)[1:5],"indianred2")
+tprobs[1,3]<-tprobs[1,3]/3 #sonst zu gross
+for(i in 1:nrow(mod$phi)){
+  wordcloud(twords[,i], tprobs[,i]*ncol(mod$phi), scale=c(2.5,0.01),random.order = FALSE, color = cols)
+}
+
+```
+The wordclouds in Figure \@ref(fig:figwc) are based on the word weights in the six keyword assisted topics: engagement, exploration, explanation, elaboration, evaluation, evolution, as well as three keywordless topics (from left to the right, from top to bottom). 
+
+
+```{r}
+#filter die docs pro topic: take the docs with the largest topic proportion
+tdocs<-top_docs(mod, n = 100)
+#works_search[head(tdocs[,9],20),"display_name"] # to inspect the tiltes
+```
+
+
+```{r}
+#filter the top 20 with the highest citation intensity and add 5 docs with publication date within the last year (2022-04-01 to 2023-03-31) to consider also the latest developments.
+#combine: 20 highest topic and most cited + 5 most recent (Apr2022-Mar2023) with highest topic prop
+docss<-topss<-NULL
+for(i in 1:6){
+  doc_names<-works_search[tdocs[,i],]
+  docsi<-head(doc_names[order(doc_names$cite_intensity,decreasing=T),c("id","display_name","publication_date","ab")],n=20)
+  docsi<-rbind(docsi,head(doc_names[doc_names$age<395,c("id","display_name","publication_date","ab")],n=5))
+  docsi<-docsi[!duplicated(docsi$display_name),]
+  topss<-c(topss,rep(names(keywords)[i],nrow(docsi)))
+  docss<-rbind(docss,docsi)
+}
+docss<-cbind(docss,topic=topss)
+colnames(docss)<-c("id","title","date","abstract","topic")
+#write to a file
+write.csv(docss,file="papers.csv")
+
+```
+
+Figure \@ref(fig:figprop) shows the dynamics of topic proportions summarized for the available publication years.
+
+```{r}
+topic_prop<-mod$theta
+topic_prop<-data.frame(cbind(topic_prop,year=works_search$publication_year))
+
+colnames(topic_prop)<-c(names(keywords),"research_dir","tech_accept","distanc_educ","year")
+
+aver_topic_prop<-aggregate(.~year,FUN=mean,topic_prop)
+aver_topic_prop<-aver_topic_prop[,match(colnames(aver_topic_prop),rev(colnames(topic_prop)))]
+```
+
+```{r figprop, fig.cap="Proportion of of topics in the considered articles over publication years"}
+#install.packages("areaplot")
+library(areaplot)
+# Colors
+
+cols <- scales::alpha(c("gray66", "gray55", "gray44", hcl.colors(6, palette = "viridis", alpha = 0.8)[1:5],"indianred2"),0.3)
+# Plot
+par(mar=c(3,1,1,8),xpd=T, mgp=c(2,1,0))
+areaplot(.~year,data=aver_topic_prop[aver_topic_prop$year<2023,], col=cols, axes=F)
+axis(1, at=seq(2015,2022))
+ats<-c(0,cumsum(unlist(aver_topic_prop[aver_topic_prop$year==2022,-1]))[-(ncol(topic_prop)-1)]) + unlist(aver_topic_prop[aver_topic_prop$year==2022,-1])/2; 
+text(2022.1,ats,colnames(aver_topic_prop)[-1],las=2,cex=0.7,pos=2,col=c(rep(1,9)))
+```
+In Figure \@ref(fig:figprop), we observe a slight increase in the literature on engagement since 2021 and substantial increase in works on challenges in distance education mainly due to pandemic restrictions in the period 2020-2021.
+
+
+To further explore the interrelations between the documents with different topics, we compute and plot the topic network with topics as vertices and two different link types as edges. The first link type deals with the expected topic proportion in documents with high proportion of a vertices-topic. The higher this expected proportion is, the thicker is the link line. For the computation top 100 documents belonging to each topic are extracted. The first network is shown in the left panel of Figure \@ref(fig:fignet). The second network type is based on the reciprocal/mutual citations of top 100 documents belonging to each topic. For the visualization of the network, we adjust the thickness of the edges depending on the citation intensity. The resulting network is shown on the right panel of Figure \@ref(fig:fignet).
+
+```{r, include=F}
+#install.packages("igraph")
+#install.packages("edgebundle")
+#install.packages("edgebundleR")
+
+library(igraph)
+library(ggraph)
+```
+
+
+```{r}
+
+K<-nrow(mod$phi)
+strength<-links<-NULL
+
+for( i in 1:K){
+  #apply(topic_prop[tdocs[,i],-(K+1)],2,mean)
+  links<-rbind(links, apply(topic_prop[tdocs[,i],1:K],2,mean)[-i])
+  strength<-rbind(strength, apply(topic_prop[tdocs[,i],1:K],2,mean))
+  strength[i,i]<-0
+}
+rownames(strength)<-colnames(strength)
+nodes<-strength; nodes[nodes>0]<-1
+
+
+#graph
+net <- graph_from_adjacency_matrix(nodes)
+
+#vetrices size, color
+V(net)$topic_size<-apply(topic_prop,2,mean)[1:K] 
+V(net)$size<-V(net)$topic_size*400
+V(net)$color<-rev(cols)[1:K]
+V(net)$label <- 1:K
+V(net)$label.color <- rep("black",K)#c(rep("black",6),rep("white",3))
+
+#edges width
+E(net)$strength<-links
+E(net)$width<-E(net)$strength*30
+E(net)$width[E(net)$strength<0.1]<-0.5
+E(net)$width[E(net)$strength<0.05]<-0
+edge.start <- ends(net, es=E(net), names=F)[,1]
+edge.col <- V(net)$color[edge.start]
+E(net)$arrow.mode<-"-"
+
+```
+
+
+plot network graph for citations (100 from topic 1 how many citations to itself and to other topics)
+
+```{r}
+docids<-data.frame()
+for(i in 1:K){
+  docids<-rbind(docids,cbind(works_search[tdocs[,i],"id"],topic=rep(i,nrow(tdocs))))
+}
+
+docss<-data.frame(topic=1:K); 
+for(i in 1:K){
+  doc_names<-works_search[tdocs[,i],]
+  doc_cited<-unlist(doc_names$referenced_works)
+  docids_cited<-aggregate(id~topic,docids[docids$id%in%doc_cited,], FUN=length)
+  suppressWarnings({
+    docss<-merge(docss, docids_cited,by.x="topic",by.y="topic",all.x=T)
+  })
+}
+colnames(docss)[-1]<-colnames(nodes)
+rownames(docss)<-colnames(nodes)
+docss[is.na(docss)]<-0
+docss<-docss[,-1]
+```
+
+```{r}
+#graph
+net2 <- graph_from_adjacency_matrix(as.matrix(docss>0))
+
+#vetrices size, color
+V(net2)$topic_size<-apply(topic_prop,2,mean)[1:K] 
+V(net2)$size<-V(net)$topic_size*400
+V(net2)$color<-rev(cols)[1:K]
+V(net2)$label <- 1:K
+V(net2)$label.color <- rep("black",K)#c(rep("black",6),rep("white",3))
+
+#edges width
+E(net2)$strength<-as.matrix(docss[docss>0])
+E(net2)$width<-E(net2)$strength*0.25
+edge.start2 <- ends(net2, es=E(net2), names=F)[,1]
+edge.col2 <- V(net2)$color[edge.start2]
+E(net2)$arrow.mode<-"-"
+
+```
+
+plot
+```{r fignet, fig.cap="Left panel: a network graph for topic proportions depicting the expected proportion of edge-connected topics in a document with a high proportion of vertice-topic. Right panel: a network graph for topic citations showing the expected citations of documents with a high proportion of edge-connected topics in a document with a high proportion of vertice-topic. Both graphical representations are obtained using 100 documents with the highest topic proportion for each topic."}
+
+par(mfrow=c(1,2),mar=c(1,1,1,1),xpd=T)
+
+set.seed(1)
+coords<-layout_in_circle(net, order = V(net))
+plot(net, layout=coords,edge.color=edge.col, edge.curved=0.1, main="Topic proportions")
+legend(0.3,-1.2,legend=paste(1:3,colnames(strength)[1:3]), border=F,pch=21,pt.bg=rev(cols)[1:3],bty="n")
+
+coords<-layout_in_circle(net2, order = V(net2))
+plot(net2, layout=coords,edge.color=edge.col2, edge.curved=0.1, main="Topic citations")
+legend(-1.5,-1.2,legend=paste(4:6,colnames(strength)[4:6]), border=F,pch=21,pt.bg=rev(cols)[4:6],bty="n")
+legend(0,-1.2,legend=paste(7:K,colnames(strength)[7:K]), border=F,pch=21,pt.bg=rev(cols)[7:K],bty="n")
+```
+In the left panel of Figure \@ref(fig:fignet), we see, that articles with high proportion of engagement topic tend to contain a high proportion of exploration issues and vice versa, as well as to relate to challenges on distance education. Articles with high proportion of explanation topic are likely to contain also exploration and evolution themes. The evaluation topic seems to be at most interrelated especially to the topics in engagement, exploration, elaboration, and challenges in distance education. Technological acceptance in is tightened to 6 evolution of learning systems and 7 research directions.
+
+Concerning the citations network on the right panel of Figure \@ref(fig:fignet), we observe that articles devoted to exploration cite often works on technology acceptance along with the same-topic articles. Documents where engagement topic is prevailing, tend to reference mainly topic 6 evolution and same-topic articles. Finally, works speaking about adaptation of learning environments refer to distanc_educ and research_dir. Interestingly, articles on research directions are closely connected to 5 evaluation and 8 technology acceptance with substantial reference proportion to articles highlighting the challenges of distance education.
+
+
+TODO:
+- review 25 articles per topic
+- add references to R packages
+- add references to the articles reviewed
 
 # Literature {-}
 
