@@ -243,11 +243,11 @@ value). Bottom panel: the average citation intensity, computed as the
 number of citations divided by the years since
 publication.](paper_files/figure-markdown_github/fignums-1.png)
 
-In Figure @ref(fig:fignums) (upper panel) we plot the number of articles
+In the Figure above (upper panel) we plot the number of articles
 in the selection on the time line of their publication date (2023 is
 omitted, dashed line marks the mean value). The figure reveals a upward
 general trend in publication number and a peak in 2021. In the bottom
-panel of Figure @ref(fig:fignums) the average citation intensity,
+panel of the previous Figure the average citation intensity,
 computed as the number of citations divided by the years since
 publication, is reported. The citation intensity of papers published in
 2020 is the highest. Apart from 2020, the overall citation intensity
@@ -284,13 +284,15 @@ LDA model to facilitate targeted extraction of 5E+E structured topics.
 The chosen keywords for the six keyword topics to assist topic
 extraction.
 
-Figure @ref(fig:figkey) presents the chosen keywords with the respective
+The figure below presents the chosen keywords with the respective
 proportional occurrence on the titles and abstracts of the considered
 collection of papers.
 
 ![The chosen keywords and their proportions in the titles and abstracts
 of the considerred collection of
-papers.](paper_files/figure-markdown_github/figkey-1.png) In the
+papers.](paper_files/figure-markdown_github/figkey-1.png) 
+
+In the
 following, we fit a keyword assisted topic model using the keywords
 above for the six keyword topics and further three keywordless topics.
 
@@ -337,7 +339,7 @@ topic 2 exploration. Such interrelatedness of the keywords is relatively
 rare under the top 20, which also supports appropriate assistance of the
 keywords for the topic finding.
 
-Figure @ref(fig:figprop0) shows the expected topic proportions per paper
+The next figure shows the expected topic proportions per paper
 The largest topic proportions for keyword assisted topics fall on the
 topics of elaboration and exploration followed by evolution. The
 smallest expected proportion among the keyword assisted topics is
@@ -353,18 +355,18 @@ probability.
 
 To inspect the topwords together with their relative weights in topics,
 we provide word clouds with top 20 topic shaping words for each topic in
-Figure @ref(fig:figwc).
+the figure below.
 
 ![Wordclouds based on the word weights in the six keyword assisted
 topics: engagement, exploration, explanation, elaboration, evaluation,
 evolution, as well as three keywordless topics (from left to the right,
 from top to bottom).](paper_files/figure-markdown_github/figwc-1.png)
-The wordclouds in Figure @ref(fig:figwc) are based on the word weights
+The wordclouds are based on the word weights
 in the six keyword assisted topics: engagement, exploration,
 explanation, elaboration, evaluation, evolution, as well as three
 keywordless topics (from left to the right, from top to bottom).
 
-Figure @ref(fig:figprop) shows the dynamics of topic proportions
+The next figure shows the dynamics of topic proportions
 summarized for the available publication years.
 
 ![Proportion of of topics in the considered articles over publication
@@ -383,12 +385,11 @@ deals with the expected topic proportion in documents with high
 proportion of a vertices-topic. The higher this expected proportion is,
 the thicker is the link line. For the computation top 100 documents
 belonging to each topic are extracted. The first network is shown in the
-left panel of Figure @ref(fig:fignet). The second network type is based
+left panel of the next figure. The second network type is based
 on the reciprocal/mutual citations of top 100 documents belonging to
 each topic. For the visualization of the network, we adjust the
 thickness of the edges depending on the citation intensity. The
-resulting network is shown on the right panel of Figure
-@ref(fig:fignet).
+resulting network is shown on the right panel of the figure below.
 
 plot network graph for citations (100 from topic 1 how many citations to
 itself and to other topics)
@@ -400,8 +401,10 @@ citations showing the expected citations of documents with a high
 proportion of edge-connected topics in a document with a high proportion
 of vertice-topic. Both graphical representations are obtained using 100
 documents with the highest topic proportion for each
-topic.](paper_files/figure-markdown_github/fignet-1.png) In the left
-panel of Figure @ref(fig:fignet), we see, that articles with high
+topic.](paper_files/figure-markdown_github/fignet-1.png) 
+
+In the left
+panel, we see, that articles with high
 proportion of engagement topic tend to contain a high proportion of
 exploration issues and vice versa, as well as to relate to challenges on
 distance education. Articles with high proportion of explanation topic
@@ -411,8 +414,7 @@ topics in engagement, exploration, elaboration, and challenges in
 distance education. Technological acceptance in is tightened to 6
 evolution of learning systems and 7 research directions.
 
-Concerning the citations network on the right panel of Figure
-@ref(fig:fignet), we observe that articles devoted to exploration cite
+Concerning the citations network on the right panel, we observe that articles devoted to exploration cite
 often works on technology acceptance along with the same-topic articles.
 Documents where engagement topic is prevailing, tend to reference mainly
 topic 6 evolution and same-topic articles. Finally, works speaking about
@@ -429,8 +431,8 @@ As an example, we use an overarching topic “gamification” and keywords
 
 ![](paper_files/figure-markdown_github/unnamed-chunk-23-1.png)
 
-\[Try it yourself!\]
-(<https://rshiny.f4.htw-berlin.de/topics_keywords_app/>)
+Try it yourself!
+<https://rshiny.f4.htw-berlin.de/topics_keywords_app/>
 
 ## Literature
 
