@@ -2,7 +2,8 @@
 title: "Explore the links between your own keywords and topics"
 author: "Maria Osipenko"
 date: ""
-output: html_document
+output:
+  html_document
 runtime: shiny
 ---
 

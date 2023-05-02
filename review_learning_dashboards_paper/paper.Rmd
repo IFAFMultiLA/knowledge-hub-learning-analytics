@@ -2,7 +2,7 @@
 title: "Online learning apps from the learning cycle perspective: recent advances and best practices"
 author: Maria Osipenko^[Hochschule für Wirtschaft und Recht Berlin; osipenko@hwr-berlin.de] and Mara Lein ^[Hochschule für Wirtschaft und Recht Berlin]
 date: ""
-output: 
+output:
  bookdown::html_document2:
     fig_caption: yes
 bibliography: [references.bib] 
@@ -25,6 +25,7 @@ knitr::opts_chunk$set(echo = FALSE)
  #    toc: false
  #    fig_caption: yes
  #    keep_tex: true
+
 ```
 
 ```{r,echo=F}
@@ -579,7 +580,7 @@ In the left panel of Figure \@ref(fig:fignet), we see, that articles with high p
 
 Concerning the citations network on the right panel of Figure \@ref(fig:fignet), we observe that articles devoted to exploration cite often works on technology acceptance along with the same-topic articles. Documents where engagement topic is prevailing, tend to reference mainly topic 6 evolution and same-topic articles. Finally, works speaking about adaptation of learning environments refer to distanc_educ and research_dir. Interestingly, articles on research directions are closely connected to 5 evaluation and 8 technology acceptance with substantial reference proportion to articles highlighting the challenges of distance education.
 
-## Explore your own keywords and their relation to topics
+## Explore your own keywords and their relation to topics{-}
 
 As an example, we use an overarching topic "gamification" and keywords "game", "play", "excit".
 
@@ -670,7 +671,12 @@ for(p in 1:length(papers)){
 ```
 
 
+
+<iframe src="https://rshiny.f4.htw-berlin.de/topics_keywords_app/" height="800" width="1000" style="border: 1px solid #464646;" allowfullscreen="" allow="autoplay" data-external="1"></iframe>
+
+
 TODO:
+
 - review 25 articles per topic
 - add references to R packages
 - add references to the articles reviewed
