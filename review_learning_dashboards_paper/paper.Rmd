@@ -476,11 +476,7 @@ To further explore the interrelations between the documents with different topic
 
 ```{r, include=F}
 #install.packages("igraph")
-#install.packages("edgebundle")
-#install.packages("edgebundleR")
-
 library(igraph)
-library(ggraph)
 ```
 
 
@@ -556,7 +552,7 @@ V(net2)$label <- 1:K
 V(net2)$label.color <- rep("black",K)#c(rep("black",6),rep("white",3))
 
 #edges width
-E(net2)$strength<-as.matrix(docss[docss>0])
+E(net2)$strength<-c(t(docss)[t(docss)>0])
 E(net2)$width<-E(net2)$strength*0.25
 edge.start2 <- ends(net2, es=E(net2), names=F)[,1]
 edge.col2 <- V(net2)$color[edge.start2]
@@ -582,6 +578,96 @@ legend(0,-1.2,legend=paste(7:K,colnames(strength)[7:K]), border=F,pch=21,pt.bg=r
 In the left panel of Figure \@ref(fig:fignet), we see, that articles with high proportion of engagement topic tend to contain a high proportion of exploration issues and vice versa, as well as to relate to challenges on distance education. Articles with high proportion of explanation topic are likely to contain also exploration and evolution themes. The evaluation topic seems to be at most interrelated especially to the topics in engagement, exploration, elaboration, and challenges in distance education. Technological acceptance in is tightened to 6 evolution of learning systems and 7 research directions.
 
 Concerning the citations network on the right panel of Figure \@ref(fig:fignet), we observe that articles devoted to exploration cite often works on technology acceptance along with the same-topic articles. Documents where engagement topic is prevailing, tend to reference mainly topic 6 evolution and same-topic articles. Finally, works speaking about adaptation of learning environments refer to distanc_educ and research_dir. Interestingly, articles on research directions are closely connected to 5 evaluation and 8 technology acceptance with substantial reference proportion to articles highlighting the challenges of distance education.
+
+## Explore your own keywords and their relation to topics
+
+As an example, we use an overarching topic "gamification" and keywords "game", "play", "excit".
+
+
+```{r}
+mykeywords<-c("game", "play", "excit")
+#reduced dfm
+mydfm_r<-mydfm[unique(as.numeric(as.matrix(tdocs))),]
+ind0<-apply(mydfm_r,2,sum)!=0
+mydfm_r<-mydfm_r[,ind0]
+
+if (sum(mykeywords%in%colnames(mydfm_r))<length(mykeywords)){
+  print(paste("omitting the missing keyword(s):",paste(mykeywords[!mykeywords%in%colnames(mydfm_r)],collapse=", ")))
+  mykeywords<-mykeywords[mykeywords%in%colnames(mydfm_r)]
+}
+
+#per topic, compute the number of top 100 docs with these keywords/ or all docs but weighted by topic proportion
+counts<-matrix(0,length(mykeywords)+K,length(mykeywords)+K)
+for(i in 1:length(mykeywords)){
+  for(j in 1:K){
+    counts[i,j+length(mykeywords)]<-sum(mydfm[as.numeric(tdocs[,j]),mykeywords[i]])
+  }
+}
+#counts per paper
+pcounts<-matrix(0,nrow(tdocs),K)
+for(i in 1:nrow(tdocs)){
+  for(j in 1:K){
+    pcounts[i,j]<-sum(mydfm[as.numeric(tdocs[i,j]),mykeywords])
+  }
+}
+
+```
+
+```{r}
+#plot k networks: one keyword vs 9 topics
+netk <- graph_from_adjacency_matrix((as.matrix(counts>0)))
+
+#colors
+kcols<-hcl.colors(max(length(mykeywords),2), palette = "green-orange", alpha = 0.8)
+
+#vetrices size, color
+V(netk)$size<-c(rep(0.1,length(mykeywords)),V(net)$topic_size)*300
+V(netk)$color<-c(kcols[1:length(mykeywords)],rev(cols)[1:K])
+V(netk)$label <- c(mykeywords,1:K)
+V(netk)$shape <- c(rep("circle",length(mykeywords)),rep("circle",K))
+V(netk)$label.color <- rep("black",K+length(mykeywords))
+
+#edges width
+E(netk)$width<-c(t(counts)[t(counts)>0]*0.25)
+edge.start <- ends(netk, es=E(netk), names=F)[,1]
+edge.col <- V(netk)$color[edge.start]
+E(netk)$arrow.mode<-"-"
+```
+
+```{r}
+#top papers
+counts_total<-apply(counts,2,sum)[-(1:length(mykeywords))] # total counts of keywords per topic
+tt<-order(counts_total, decreasing = T) #sort decreasing
+howmany_topics<-5
+tt<-tt[1:min(length(tt[counts_total>0]),howmany_topics)] #take at most howmany_topics with the keywords
+
+howmany_papers<-3
+ppapers<-NULL
+for(i in 1:length(tt)){
+  ppapers<-c(ppapers,works_search$display_name[tdocs[order(pcounts[,i], decreasing=T),tt[i]][1:howmany_papers]])
+}
+
+
+papers<-paste(rep(tt, each=howmany_papers), ppapers)
+pcols<-c("gray66", "gray55", "gray44", hcl.colors(6, palette = "viridis", alpha = 1)[1:5],"indianred2")
+pcols<-rep(rev(pcols)[tt],each=howmany_papers)
+```
+
+
+```{r}
+par(mfrow=c(1,2),mar=c(0,0,1,0))
+coords<-layout_in_circle(netk, order = V(netk))
+plot(netk, layout=coords,edge.color=edge.col, edge.curved=0.1, main="Keyword relations")
+legend("bottomleft", legend=paste(1:4,colnames(strength)[1:4]), border=F,pch=21,pt.bg=rev(cols)[1:4],bty="n",cex=0.6)
+legend("bottomright", legend=paste(5:K,colnames(strength)[5:K]), border=F,pch=21,pt.bg=rev(cols)[5:K],bty="n",cex=0.6)
+
+plot(c(0,1),c(0,1), axes=F, col=NA, main="Top papers", xlab="", ylab="")
+par(xpd=T)
+for(p in 1:length(papers)){
+  text(0,1-(p-1)*length(papers)/220, papers[p], col=pcols[p],cex=0.7, pos=4)
+}
+
+```
 
 
 TODO:

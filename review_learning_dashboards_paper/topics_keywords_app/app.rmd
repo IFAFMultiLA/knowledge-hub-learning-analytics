@@ -1,0 +1,210 @@
+---
+title: "Explore the links between your own keywords and topics"
+author: "Maria Osipenko"
+date: ""
+output: html_document
+runtime: shiny
+---
+
+<style type="text/css">
+.main-container {
+  max-width: 100% !important;
+  margin-left: auto;
+  margin-right: auto;
+}
+</style>
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+
+library(quanteda)
+library(tidyverse)
+library(keyATM)
+library(igraph)
+```
+
+Try it yourself! Type in, for example: game, play, excit
+
+```{r}
+load("works_search_filter_all.RData")
+works_search<-works_search[!is.na(works_search$ab),]
+
+#mydfm: combine titles and abstracts
+texts<-works_search[,c("id","display_name","ab")] 
+texts$ab<-gsub("Abstract","",texts$ab)
+texts$ab<-paste(texts$display_name,texts$ab)
+texts<-texts[!duplicated(texts$id),]
+rm_short_tokens<-function(tk,min.len=3){
+  return(tk[nchar(tk)>=min.len])
+}
+make_dfm<-function(texts){
+  #stopwords
+  mystopwords<-c("may","can","sub","now","etc", "the","via","let", "e.g", "also")
+  #tokenize
+  tk<-tokenizers::tokenize_word_stems(texts, stopwords = c(stopwords::stopwords("en"),mystopwords))
+  tk<-lapply(tk,rm_short_tokens)
+  tk<-tokens(as.tokens(tk), remove_punct=TRUE, remove_numbers = TRUE, remove_symbols = TRUE,remove_url = TRUE, remove_separators = TRUE, split_hyphens=T)
+  tk<-lapply(tk,gsub,pattern="quizz",replacement="quiz"); tk<-lapply(tk,gsub,pattern="quizizz",replacement="quiz")
+  tk<-lapply(tk,gsub,pattern="customis",replacement="customiz"); 
+  tk<-lapply(tk,gsub,pattern="practis",replacement="practic")
+  tk2<-tokens_ngrams(as.tokens(tk),n=1:2,skip=4)
+  #dfm
+  mydfm<-dfm(tk2, verbose = FALSE,tolower=TRUE)
+  #keep only terms with more than two chars
+  mydfm<-dfm_select(mydfm,pattern=c(stopwords::stopwords("en"),mystopwords),valuetype="fixed",selection="remove")
+  #keep only words with frequency >=10
+  mydfm<-dfm_trim(mydfm, min_docfreq = 0.001, max_docfreq=0.5,docfreq_type="prop")
+  #take relative frequencies as entries
+  return(mydfm)
+}
+mydfm<-make_dfm(texts$ab)
+
+# choose keywords
+keywords<-as.list(1:6)
+names(keywords)<-c("engagement","exploration","explanation","elaboration","evaluation","evolution")
+keywords$engagement<-c("engag","motiv","emot","promot") 
+keywords$exploration<-c("explor", "experi", "interact", "activ")
+keywords$explanation<-c("explain", "instruct","knowledg", "theori") 
+keywords$elaboration<-c("problem","solv", "practic", "applic")
+keywords$evaluation<-c("assess", "evalu","test","feedback") 
+keywords$evolution<-c("adapt", "individu",  "improv", "behavior") 
+keywords_df<-data.frame(keywords)
+
+#load the model
+load("mod.RData")
+K<-nrow(mod$phi)
+topwords<-top_words(mod, n = 20)
+colnames(topwords)<-c(colnames(topwords)[1:6], "7_research_dir", "8_tech_accept", "9_distanc_educ")
+topicprop<-apply(mod$theta,2,mean) #overall topic proportion
+cols <- c("gray66", "gray55", "gray44", hcl.colors(6, palette = "viridis", alpha = 0.8)[1:5],"indianred2")
+tdocs<-top_docs(mod, n = 100)
+topic_prop<-mod$theta
+topic_prop<-data.frame(cbind(topic_prop,year=works_search$publication_year))
+colnames(topic_prop)<-c(names(keywords),"research_dir","tech_accept","distanc_educ","year")
+
+```
+
+
+```{r}
+library(shiny)
+shinyApp(
+
+  ui = fluidPage(
+    textInput("kw", "Keywords (separated by comma):"),
+    actionButton("bkw","show the links",style="color: #fff; background-color: #337ab7; border-color: #2e6da4"),
+    textOutput("kwwarn"),
+    plotOutput("kwPlot",width = "100%")
+  ),
+
+  server = function(input, output) {
+    
+    mykeywords<-reactiveVal()
+    counts<-reactiveVal()
+    omit_text<-reactiveVal()
+    netk<-reactiveVal()
+    papers<-reactiveVal()
+    pcols<-reactiveVal()
+    
+    
+    observeEvent(input$bkw,{
+      #keywords
+      kw<-gsub("[[:space:]]", "", unlist(strsplit(input$kw,"\\,")))
+      mydfm_r<-mydfm[unique(as.numeric(as.matrix(tdocs))),]
+      ind0<-apply(mydfm_r,2,sum)!=0
+      mydfm_r<-(mydfm_r[,ind0])
+      mykeywords(kw[kw%in%colnames(mydfm_r)])
+      l<-length(mykeywords())
+      
+      #counts
+       if(l>0){
+        coun<-matrix(0,l+K,l+K)
+          for(i in 1:l){
+            for(j in 1:K){
+             coun[i,j+l]<-sum(mydfm[as.numeric(tdocs[,j]),mykeywords()[i]])
+            }
+          }
+        counts(coun)
+      
+      #netk
+     
+        nett <- graph_from_adjacency_matrix(as.matrix(counts()>0))
+        #colors
+        kcols<-hcl.colors(max(l,2), palette = "green-orange", alpha = 0.8)[1:l]
+  
+        #vetrices size, color
+        V(nett)$size<-c(rep(0.1,l),apply(topic_prop,2,mean)[1:K])*300
+        V(nett)$color<-c(kcols,rev(cols)[1:K])
+        V(nett)$label <- c(mykeywords(),1:K)
+        V(nett)$shape <- c(rep("circle",l),rep("circle",K))
+        V(nett)$label.color <- rep("black",K+l)
+  
+        #edges width
+        E(nett)$width<-c(t(counts())[t(counts())>0]*0.25)
+        E(nett)$arrow.mode<-"-"
+        
+        netk(nett)
+        
+        #top papers
+        counts_total<-apply(counts(),2,sum)[-(1:length(mykeywords()))] # total counts of keywords per topic
+        tt<-order(counts_total, decreasing = T) #sort decreasing
+        howmany_topics<-5
+        tt<-tt[1:min(length(tt[counts_total>0]),howmany_topics)] #take at most howmany_topics with the keywords
+        
+        #counts per paper
+        pcounts<-matrix(0,nrow(tdocs),K)
+        for(i in 1:nrow(tdocs)){
+          for(j in 1:K){
+            pcounts[i,j]<-sum(mydfm[as.numeric(tdocs[i,j]),mykeywords()])
+          }
+        }
+        howmany_papers<-3
+        ppapers<-NULL
+        for(i in 1:length(tt)){
+          ppapers<-c(ppapers,works_search$display_name[tdocs[order(pcounts[,i], decreasing=T),tt[i]][1:howmany_papers]])
+        }
+        
+        papers(paste(rep(tt, each=howmany_papers), ppapers))
+        
+        #colors
+        pcols(rep(rev(c("gray66", "gray55", "gray44", 
+                         hcl.colors(6, palette = "viridis", alpha = 1)[1:5],"indianred2"))[tt],each=howmany_papers))
+      }
+      
+
+      
+      #omitted
+      omitted<-!kw%in%mykeywords()
+        if (length(omitted)>0){
+          text<-paste("omitting the missing keyword(s):",paste(kw[omitted],collapse=", "))
+          omit_text(text)
+        }
+      
+    })
+    
+    output$kwwarn = renderText({
+      print(omit_text())
+         })
+    
+    output$kwPlot = renderPlot({
+      par(mfrow=c(1,2))
+      if(is.igraph(netk())){
+      #plot
+      coords<-layout_in_circle(netk(), order = V(netk()))
+      edge.start <- ends(netk(), es=E(netk()), names=F)[,1]
+      edge.col <- V(netk())$color[edge.start]
+      plot(netk(), ylim=c(-1,1), xlim=c(-1,1),layout=coords,edge.color=edge.col, edge.curved=0.1, main="Keyword relations")
+        legend("bottomleft", legend=paste(1:4,colnames(topic_prop)[1:4]), border=F,pch=21,pt.bg=rev(cols)[1:4],bty="n",cex=0.8)
+        legend("bottomright", legend=paste(5:K,colnames(topic_prop)[5:K]), border=F,pch=21,pt.bg=rev(cols)[5:K],bty="n",cex=0.8)
+      #show papers
+      plot(c(0,1),c(0,1), axes=F, col=NA, main="Top papers", xlab="", ylab="")
+      par(xpd=T)
+      for(p in 1:length(papers())){
+        text(0,1-(p-1)*length(papers())/220, papers()[p], col=pcols()[p],cex=0.8, pos=4)
+        }
+      }
+  }, width="auto")
+
+  },
+options=list(height=800)
+)
+```
