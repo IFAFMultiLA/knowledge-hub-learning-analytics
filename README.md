@@ -3,6 +3,8 @@ literature review and bibliography collection to online learning, shiny apps and
 
 # Online learning apps from the learning cycle perspective: recent advances and best practices
 
+### Maria Osipenko [1] and Mara Lein [2]
+
 ## Introduction
 
 Online learning applications with a large proportion of interactive,
