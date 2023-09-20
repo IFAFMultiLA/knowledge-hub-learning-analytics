@@ -1,10 +1,10 @@
 # knowledge-hub-learning-analytics
 literature review and bibliography collection to online learning, shiny apps and other topics in learning analytics.
 
-# Online learning apps from the learning cycle perspective: recent advances and best practices
+# Online learning apps from the learning cycle perspective: patterns in recent advances and best practices
 
-### Maria Osipenko [1] and Mara Lein [2]
-
+### Maria Osipenko [1] 
+ 
 ## Introduction
 
 Online learning applications with a large proportion of interactive,
