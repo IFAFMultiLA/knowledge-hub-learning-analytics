@@ -50,13 +50,13 @@ specific criteria provided below.
 To pivot/structure our analysis, we adopt a 5E instructional framework,
 where designing of learning units follows the five-phase learning cycle:
 Engage, Explore, Explain, Elaborate, and Evaluate described in Bybee et
-al. ([2006](#ref-bybee2006)) and Hew et al. ([2020](#ref-hew2020)). The
+al. ([2006](#-bybee2006)) and Hew et al. ([2020](#-hew2020)). The
 first phase aims at engaging students e.g. by pointing out to real world
 problem or question, the second phase deals with the exploration of the
 problem, the next step attempts at explaining the phenomena based on
 existing knowledge, elaborating the content implies providing material
 for deeper understanding and exercising, and the last step evaluates
-learning success. Su, Chiu, and Wang ([2010](#ref-su2010)) use 5E
+learning success. Su, Chiu, and Wang ([2010](#-su2010)) use 5E
 learning cycle for designing an e-learning course and show that they
 enhance learning success.
 
@@ -65,7 +65,7 @@ feature, we propose to extend the 5E model to 5E+E by adding the “6
 Evolution”-step. This step does not concern the learning cycle itself
 but rather includes the analysis of learning system usability and
 improvement considerations towards developing an adaptive personalized
-e-learning system, which adapts to individual learning preferences. In
+e-learning system, which adapts to individual learning perences. In
 the following, we undertake a more detailed overview of the learning
 cycle phases.
 
@@ -269,7 +269,7 @@ using the R-Package keyATM (Eshima, Imai, and Sasaki
 
 ### Fiting keyATM
 
-Table @ref(tab:tabkey) documents the provided keywords for the six
+The table below documents the provided keywords for the six
 keyword topics. These keywords are used as input into keyword assisted
 LDA model to facilitate targeted extraction of 5E+E structured topics.
 
@@ -328,7 +328,7 @@ The 20 topwords for each topic. The keywords matched on the respective
 topic are marked by a check mark. The keywords in the topwords of a
 foreign topic are label by the number of the keyword topic.
 
-Table @ref(tab:tabtw) documents the resulting 20 topwords for each topic
+The table above documents the resulting 20 topwords for each topic
 with the keywords marked by a check mark. As seen, the most keywords are
 under the top 20, giving appropriate assistance to the topic extraction.
 The keyword, which are also under the top twenty in a foreign topic are
@@ -347,7 +347,9 @@ first one with the top words “research”, “digit”, “higher”, “revie
 dominating.
 
 ![Expected topic proportions of the extracted topics and the top topic
-words.](paper_files/figure-markdown_github/figprop0-1.png) In general,
+words.](paper_files/figure-markdown_github/figprop0-1.png) 
+
+In general,
 the expected topic proportions are rather moderate, meaning that the
 most papers contain more more than one topic with rather high
 probability.
@@ -360,6 +362,7 @@ the figure below.
 topics: engagement, exploration, explanation, elaboration, evaluation,
 evolution, as well as three keywordless topics (from left to the right,
 from top to bottom).](paper_files/figure-markdown_github/figwc-1.png)
+
 The wordclouds are based on the word weights
 in the six keyword assisted topics: engagement, exploration,
 explanation, elaboration, evaluation, evolution, as well as three
@@ -369,8 +372,9 @@ The next figure shows the dynamics of topic proportions
 summarized for the available publication years.
 
 ![Proportion of of topics in the considered articles over publication
-years](paper_files/figure-markdown_github/figprop-1.png) In Figure
-@ref(fig:figprop), we observe a slight increase in the literature on
+years](paper_files/figure-markdown_github/figprop-1.png) 
+
+In figure above, we observe a slight increase in the literature on
 engagement since 2021 and substantial increase in works on challenges in
 distance education mainly due to pandemic restrictions in the period
 2020-2021.
@@ -390,10 +394,7 @@ each topic. For the visualization of the network, we adjust the
 thickness of the edges depending on the citation intensity. The
 resulting network is shown on the right panel of the figure below.
 
-plot network graph for citations (100 from topic 1 how many citations to
-itself and to other topics)
-
-plot ![Left panel: a network graph for topic proportions depicting the
+![Left panel: a network graph for topic proportions depicting the
 expected proportion of edge-connected topics in a document with a high
 proportion of vertice-topic. Right panel: a network graph for topic
 citations showing the expected citations of documents with a high
@@ -746,5 +747,3 @@ Education: Research* 19 (January): 041–63.
 </div>
 
 [1] Hochschule für Wirtschaft und Recht Berlin; <osipenko@hwr-berlin.de>
-
-[2] Hochschule für Wirtschaft und Recht Berlin
